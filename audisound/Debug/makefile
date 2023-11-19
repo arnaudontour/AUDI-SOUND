@@ -60,8 +60,8 @@ all: main-build
 main-build: audisound.elf secondary-outputs
 
 # Tool invocations
-audisound.elf audisound.map: $(OBJS) $(USER_OBJS) C:\Users\arnau\STM32CubeIDE\workspace_1.12.1\audisound\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "audisound.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\arnau\STM32CubeIDE\workspace_1.12.1\audisound\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="audisound.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+audisound.elf audisound.map: $(OBJS) $(USER_OBJS) C:\Users\antoi\OneDrive\Documents\AUDI-SOUND\audisound\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "audisound.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\antoi\OneDrive\Documents\AUDI-SOUND\audisound\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="audisound.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
