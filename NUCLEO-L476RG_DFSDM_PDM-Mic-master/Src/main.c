@@ -42,6 +42,8 @@
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
+#include "dac.h"
+#include "tim.h"
 
 /* USER CODE BEGIN Includes */
 #include "math.h"
@@ -65,6 +67,8 @@ float FFT_mag[FFT_SampleNum/2] = {0.0f};
 float FFT_dB[FFT_SampleNum/2] = {0.0f};
 float FFT_frq[FFT_SampleNum/2] = {0.0f};
 float FFT_window[FFT_SampleNum] = {0.0f};
+
+volatile uint16_t dac1_out1_buf[1024*2] = { 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,9 +108,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM6_Init();
   MX_DMA_Init();
   MX_DFSDM1_Init();
   MX_USART2_UART_Init();
+  MX_DAC1_Init();
+
+  // Start timer 6 and DAC for DMA
+  HAL_TIM_Base_Start(&htim6);
+  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
+  HAL_DAC_Start_DMA(&hdac1, DAC_CHANNEL_1, (uint32_t*)dac1_out1_buf, FFT_SampleNum,
+       DAC_ALIGN_12B_R);
+
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
+
+  /* USER CODE END 3 */
 
   /* USER CODE BEGIN 2 */
   printf("\r\n***** Program start! *****\r\n");
@@ -121,15 +139,6 @@ int main(void)
             / hdfsdm1_filter0.Init.FilterParam.Oversampling
             / hdfsdm1_filter0.Init.FilterParam.IntOversampling;
 
-    // Hanning window
-    const float tmp = 2.0f * M_PI / (float) FFT_SampleNum;
-    for (uint32_t i = 0; i < FFT_SampleNum; i++)
-        *(FFT_window + i) = 0.5f - 0.5f * arm_cos_f32((float) i * tmp);
-
-    for (uint32_t i = 0; i < FFT_SampleNum / 2; i++)
-        *(FFT_frq + i) = (float)i * (float)FFT_SampleRate / (float) FFT_SampleNum;
-
-    arm_rfft_fast_init_f32(&S, FFT_SampleNum );
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,53 +148,15 @@ int main(void)
         // Wait
         while (flag);
 
-        // Raw data output
-        /*for (uint32_t i = 0; i < FFT_SampleNum; i++)
-             printf("%d\r\n", FFT_inp_int32[i]);*/
-
         // Set input data
-        for (uint32_t i = 0; i < FFT_SampleNum; i++)
-            FFT_inp[i] = (float) FFT_inp_int32[i];
 
-        // Windowing
-        arm_mult_f32(FFT_inp, FFT_window, FFT_inp, FFT_SampleNum);
-
-        // Execute FFT
-        arm_rfft_fast_f32(&S, FFT_inp, FFT_oup, 0);
-
-        // calculate magnitude
-        arm_cmplx_mag_f32(FFT_oup, FFT_mag, FFT_SampleNum / 2);
-
-        // Normalization (Unitary transformation) of magnitude
-        arm_scale_f32(FFT_mag, 1.0f / sqrtf((float) FFT_SampleNum), FFT_mag, FFT_SampleNum / 2);
-
-        // AC coupling
-        for (uint32_t i = 0; i < FFT_SampleNum / 2; i++)
-        {
-            if (*(FFT_frq + i) < FFT_AC_COUPLING_HZ)
-                FFT_mag[i] = 1.0f;
-            else
-                break;
+        for (uint32_t i = 0; i < FFT_SampleNum ; i++){
+        	FFT_inp[i] = (float) FFT_inp_int32[i];
+        	//dac1_out1_buf[i] = (uint32_t*)FFT_inp[i];
+        	memcpy(&dac1_out1_buf[i], &FFT_inp[i], sizeof dac1_out1_buf[i]);
+        	printf("\r\n hello x = %f \r\n"dac1_out1_buf[i]);
         }
 
-        float inv_dB_base_mag = 1.0f / 1.0f;
-        for (uint32_t i = 0; i < FFT_SampleNum / 2; i++)
-            FFT_dB[i] = 10.0f * log10f(FFT_mag[i] * inv_dB_base_mag);
-
-        // calc max mag
-        float mag_max, frq_max;
-        uint32_t maxIndex;
-        arm_max_f32(FFT_mag, FFT_SampleNum / 2, &mag_max, &maxIndex);
-        frq_max = *(FFT_frq + maxIndex);
-
-        printf("\r\nSampleRate=%d, frq_max = %.1f, mag_max = %f\r\n", (int)FFT_SampleRate, frq_max, mag_max);
-        for (uint32_t i = 0; i < FFT_SampleNum / 2; i++)
-        {
-            printf("%.1f\t%f\t%f\r\n", FFT_frq[i], FFT_mag[i], FFT_dB[i]);
-        }
-
-        //while(1);
-        HAL_Delay(2000);
         flag = true;        // <- Continuous transformation
   /* USER CODE END WHILE */
 
@@ -307,6 +278,7 @@ int _write(int file, char *ptr, int len)
     HAL_UART_Transmit(&huart2, (uint8_t *)ptr, (uint16_t)len, 0xFFFFFFFF);
     return len;
 }
+
 /* USER CODE END 4 */
 
 /**
