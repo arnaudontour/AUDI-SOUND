@@ -56,7 +56,7 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 bool flag = true;
-int32_t Buff[FFT_SampleNum * 2] = {0};
+int32_t Buff[FFT_SampleNum] = {0};
 
 arm_rfft_fast_instance_f32 S;
 float FFT_SampleRate;
@@ -68,7 +68,7 @@ float FFT_dB[FFT_SampleNum/2] = {0.0f};
 float FFT_frq[FFT_SampleNum/2] = {0.0f};
 float FFT_window[FFT_SampleNum] = {0.0f};
 
-volatile uint16_t dac1_out1_buf[1024*2] = { 0 };
+volatile uint32_t dac1_out1_buf[FFT_SampleNum] = { 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,9 +152,8 @@ int main(void)
 
         for (uint32_t i = 0; i < FFT_SampleNum ; i++){
         	FFT_inp[i] = (float) FFT_inp_int32[i];
-        	//dac1_out1_buf[i] = (uint32_t*)FFT_inp[i];
-        	memcpy(&dac1_out1_buf[i], &FFT_inp[i], sizeof dac1_out1_buf[i]);
-        	printf("\r\n hello x = %f \r\n"dac1_out1_buf[i]);
+        	dac1_out1_buf[i] = (uint32_t) FFT_inp[i];
+        	printf("\r\n hello x = %u \r\n",dac1_out1_buf[i]);
         }
 
         flag = true;        // <- Continuous transformation
