@@ -6,7 +6,7 @@
   ******************************************************************************
   ** This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether
+  * USER CODE END. Other portions of this file, whether 
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
@@ -56,7 +56,7 @@ void MX_DAC1_Init(void)
 {
   DAC_ChannelConfTypeDef sConfig;
 
-    /**DAC Initialization
+    /**DAC Initialization 
     */
   hdac1.Instance = DAC1;
   if (HAL_DAC_Init(&hdac1) != HAL_OK)
@@ -64,7 +64,7 @@ void MX_DAC1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-    /**DAC channel OUT1 config
+    /**DAC channel OUT1 config 
     */
   sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
   sConfig.DAC_Trigger = DAC_TRIGGER_T6_TRGO;
@@ -89,9 +89,9 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* dacHandle)
   /* USER CODE END DAC1_MspInit 0 */
     /* DAC1 clock enable */
     __HAL_RCC_DAC1_CLK_ENABLE();
-
-    /**DAC1 GPIO Configuration
-    PA4     ------> DAC1_OUT1
+  
+    /**DAC1 GPIO Configuration    
+    PA4     ------> DAC1_OUT1 
     */
     GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -132,9 +132,9 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* dacHandle)
   /* USER CODE END DAC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DAC1_CLK_DISABLE();
-
-    /**DAC1 GPIO Configuration
-    PA4     ------> DAC1_OUT1
+  
+    /**DAC1 GPIO Configuration    
+    PA4     ------> DAC1_OUT1 
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
 
@@ -144,7 +144,7 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* dacHandle)
 
   /* USER CODE END DAC1_MspDeInit 1 */
   }
-}
+} 
 
 /* USER CODE BEGIN 1 */
 

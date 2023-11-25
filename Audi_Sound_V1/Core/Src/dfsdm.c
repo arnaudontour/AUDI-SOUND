@@ -6,7 +6,7 @@
   ******************************************************************************
   ** This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether
+  * USER CODE END. Other portions of this file, whether 
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
@@ -110,10 +110,10 @@ void HAL_DFSDM_FilterMspInit(DFSDM_Filter_HandleTypeDef* dfsdm_filterHandle)
     if(HAL_RCC_DFSDM1_CLK_ENABLED==1){
       __HAL_RCC_DFSDM1_CLK_ENABLE();
     }
-
-    /**DFSDM1 GPIO Configuration
+  
+    /**DFSDM1 GPIO Configuration    
     PC2     ------> DFSDM1_CKOUT
-    PB1     ------> DFSDM1_DATIN0
+    PB1     ------> DFSDM1_DATIN0 
     */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -134,7 +134,7 @@ void HAL_DFSDM_FilterMspInit(DFSDM_Filter_HandleTypeDef* dfsdm_filterHandle)
   /* USER CODE END DFSDM1_MspInit 1 */
   DFSDM1_Init++;
   }
-
+  
     /* DFSDM1 DMA Init */
     /* DFSDM1_FLT0 Init */
   if(dfsdm_filterHandle->Instance == DFSDM1_Filter0){
@@ -174,10 +174,10 @@ void HAL_DFSDM_ChannelMspInit(DFSDM_Channel_HandleTypeDef* dfsdm_channelHandle)
     if(HAL_RCC_DFSDM1_CLK_ENABLED==1){
       __HAL_RCC_DFSDM1_CLK_ENABLE();
     }
-
-    /**DFSDM1 GPIO Configuration
+  
+    /**DFSDM1 GPIO Configuration    
     PC2     ------> DFSDM1_CKOUT
-    PB1     ------> DFSDM1_DATIN0
+    PB1     ------> DFSDM1_DATIN0 
     */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -211,10 +211,10 @@ void HAL_DFSDM_FilterMspDeInit(DFSDM_Filter_HandleTypeDef* dfsdm_filterHandle)
   /* USER CODE END DFSDM1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DFSDM1_CLK_DISABLE();
-
-    /**DFSDM1 GPIO Configuration
+  
+    /**DFSDM1 GPIO Configuration    
     PC2     ------> DFSDM1_CKOUT
-    PB1     ------> DFSDM1_DATIN0
+    PB1     ------> DFSDM1_DATIN0 
     */
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_2);
 
@@ -241,10 +241,10 @@ void HAL_DFSDM_ChannelMspDeInit(DFSDM_Channel_HandleTypeDef* dfsdm_channelHandle
   /* USER CODE END DFSDM1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DFSDM1_CLK_DISABLE();
-
-    /**DFSDM1 GPIO Configuration
+  
+    /**DFSDM1 GPIO Configuration    
     PC2     ------> DFSDM1_CKOUT
-    PB1     ------> DFSDM1_DATIN0
+    PB1     ------> DFSDM1_DATIN0 
     */
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_2);
 
@@ -254,7 +254,7 @@ void HAL_DFSDM_ChannelMspDeInit(DFSDM_Channel_HandleTypeDef* dfsdm_channelHandle
 
   /* USER CODE END DFSDM1_MspDeInit 1 */
   }
-}
+} 
 
 /* USER CODE BEGIN 1 */
 

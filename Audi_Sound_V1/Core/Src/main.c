@@ -69,6 +69,8 @@ float FFT_frq[FFT_SampleNum/2] = {0.0f};
 float FFT_window[FFT_SampleNum] = {0.0f};
 
 volatile uint32_t dac1_out1_buf[FFT_SampleNum] = { 0 };
+volatile bool adc1_in1_a = false;
+volatile bool adc1_in1_b = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -143,25 +145,42 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-        // Wait
-        while (flag);
+    while (1)
+      {
+            // Wait
+    	    printf("\r\n***** test *****\r\n");
+            //while (flag);
 
-        // Set input data
+            // Set input data
 
-        for (uint32_t i = 0; i < FFT_SampleNum ; i++){
-        	FFT_inp[i] = (float) FFT_inp_int32[i];
-        	dac1_out1_buf[i] = (uint32_t) FFT_inp[i];
-        	printf("\r\n hello x = %u \r\n",dac1_out1_buf[i]);
-        }
+            /*for (uint32_t i = 0; i < FFT_SampleNum ; i++){
+            	FFT_inp[i] = (float) FFT_inp_int32[i];
+            	dac1_out1_buf[i] = (uint32_t) FFT_inp[i];
+            	printf("\r\n%u\r",dac1_out1_buf[i]);
+            }*/
 
-        flag = true;        // <- Continuous transformation
-  /* USER CODE END WHILE */
+            if (adc1_in1_a) {
+                 if (Buff[0] >= (4095-128) || Buff[0] <128) {
+                   printf("%u @ %lu\n", Buff[0], HAL_GetTick());
+                 }
+                 for (uint32_t n = 0; n < 1024; n++) {
+                   dac1_out1_buf[n] = Buff[n];
+                   printf("\r\n%u\r",dac1_out1_buf[n]);
+                 }
+                 adc1_in1_a = false;
+               } else if (adc1_in1_b) {
+                 for (uint32_t n = 1024; n < 1024*2; n++) {
+                	 printf("\r\n%u\r",dac1_out1_buf[n]);
+                 }
+                 adc1_in1_b = false;
+               }
 
-  /* USER CODE BEGIN 3 */
 
-  }
+            flag = true;        // <- Continuous transformation
+        /* USER CODE END WHILE */
+
+        /* USER CODE BEGIN 3 */
+      }
   /* USER CODE END 3 */
 
 }
@@ -242,28 +261,17 @@ void SystemClock_Config(void)
   */
 void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
 {
-    /*static int i = 0;
-    printf("%d\r\n", i);
-    i++;*/
+	  if (hdfsdm_filter == &hdfsdm1_filter0) {
+	    adc1_in1_a = true;
+	  }
+
 }
 
-/**
-  * @brief  Regular conversion complete callback.
-  * @note   In interrupt mode, user has to read conversion value in this function
-            using HAL_DFSDM_FilterGetRegularValue.
-  * @param  hdfsdm_filter : DFSDM filter handle.
-  * @retval None
-  */
 void HAL_DFSDM_FilterRegConvCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter)
 {
-    if (flag)
-    {
-        for (uint32_t i = 0; i < FFT_SampleNum; i++)
-        {
-            FFT_inp_int32[i] = Buff[i];
-        }
-        flag = false;
-    }
+	 if (hdfsdm_filter == &hdfsdm1_filter0) {
+	    adc1_in1_b = true;
+	  }
 
 }
 

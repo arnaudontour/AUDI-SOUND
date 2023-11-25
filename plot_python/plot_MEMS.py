@@ -7,7 +7,7 @@ Created on Mon Jun 12 12:54:49 2023
 import matplotlib.pyplot as plt
 
 # Ouvrir le fichier en lecture seule
-file = open('plot.txt', "r")
+file = open('plot_2.txt', "r")
 # utiliser readlines pour lire toutes les lignes du fichier
 # La variable "lignes" est une liste contenant toutes les lignes du fichier
 lines = file.readlines()
@@ -22,8 +22,8 @@ data = []
 for line in lines:
     a = line.split()
     print(a)
-    data.append(float(a[2]))
-    freq.append(float(a[0]))
+    data.append(float(a[0]))
+    #freq.append(float(a[0]))
  
-plt.plot(freq,data)
+plt.plot(data)
 #plt.axis([1000, 10000, 20, 50])

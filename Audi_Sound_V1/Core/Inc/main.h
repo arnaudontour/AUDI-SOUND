@@ -62,7 +62,7 @@
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-#define FFT_SampleNum       10
+#define FFT_SampleNum       1024
 #define FFT_AC_COUPLING_HZ  1000.0f
 /* USER CODE END Private defines */
 
